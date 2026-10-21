@@ -1,4 +1,19 @@
+import streamlit as st
+import pandas as pd
+from supabase import create_client
+import plotly.express as px
+
 # /// script
+# dependencies = [
+#     "streamlit",
+#     "pandas",
+#     "supabase",
+#     "plotly",
+#     "openpyxl",
+# ]
+# ///
+
+st.set_page_config(page_title="Controle RM", layout="wide")
 # dependencies = [
 #     "streamlit",
 #     "pandas",
