@@ -1,4 +1,12 @@
-import streamlit as st
+# /// script
+# dependencies = [
+#     "streamlit",
+#     "pandas",
+#     "supabase",
+#     "plotly",
+#     "openpyxl",
+# ]
+# ///
 import pandas as pd
 from supabase import create_client
 import plotly.express as px
