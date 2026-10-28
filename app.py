@@ -198,7 +198,7 @@ with aba2:
     row = df[df["id"] == id_edit]
     if not row.empty:
         row = row.iloc[0]
-        with st.form("editar"):
+        with st.form("editar", clear_on_submit=True):
             c1, c2, c3 = st.columns(3)
             pac = c1.text_input("Paciente", row["paciente"])
             tip = c2.text_input("Tipo de Exame", row["tipo_exame"])
@@ -225,7 +225,7 @@ with aba2:
 # ---------- ABA 3: NOVO EXAME ----------
 with aba3:
     st.subheader("➕ Adicionar Novo Exame")
-    with st.form("novo"):
+    with st.form("novo", clear_on_submit=True):
         c1, c2, c3 = st.columns(3)
         num = c1.text_input("Nº Atendimento")
         pac = c2.text_input("Paciente *")
