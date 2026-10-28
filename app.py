@@ -14,19 +14,6 @@ import plotly.express as px
 # ///
 
 st.set_page_config(page_title="Controle RM", layout="wide")
-# dependencies = [
-#     "streamlit",
-#     "pandas",
-#     "supabase",
-#     "plotly",
-#     "openpyxl",
-# ]
-# ///
-import pandas as pd
-from supabase import create_client
-import plotly.express as px
-
-st.set_page_config(page_title="Controle RM", layout="wide")
 
 URL = st.secrets["URL_SUPABASE"]
 KEY = st.secrets["KEY_SUPABASE"]
@@ -56,6 +43,7 @@ def carregar():
     return df
 
 df = carregar()
+
 # Criando duas colunas para a logo ficar ao lado do título
 col_logo, col_titulo = st.columns([1, 8])
 
@@ -196,8 +184,10 @@ with aba2:
     st.subheader("✏️ Editar exame pelo ID")
     id_edit = st.number_input("ID do exame", min_value=1, step=1, value=int(f["id"].iloc[0]) if len(f) > 0 else 1)
     row = df[df["id"] == id_edit]
+    
     if not row.empty:
         row = row.iloc[0]
+        # Formulário com a limpeza automática ativada
         with st.form("editar", clear_on_submit=True):
             c1, c2, c3 = st.columns(3)
             pac = c1.text_input("Paciente", row["paciente"])
@@ -207,24 +197,36 @@ with aba2:
             sol = c2.text_input("Solicitante", row["solicitante"] or "")
             obs = c3.text_input("Observações", row["observacoes"] or "")
 
-            if st.form_submit_button("💾 Salvar alterações"):
+            # Criando as colunas para os botões ficarem lado a lado (Ajuste visual)
+            col_btn1, col_btn2, _ = st.columns([2, 2, 4]) 
+            
+            with col_btn1:
+                btn_salvar = st.form_submit_button("💾 Salvar alterações")
+                
+            with col_btn2:
+                btn_excluir = st.form_submit_button("🗑️ Excluir este exame")
+
+            # Ação do botão Salvar
+            if btn_salvar:
                 supabase.table("exames").update({
-                    "paciente": pac, "tipo_exame": tip, "medico": med, "especialidade": esp,
-                    "solicitante": sol, "observacoes": obs,
+                    "paciente": pac, "tipo_exame": tip, "medico": med, 
+                    "especialidade": esp, "solicitante": sol, "observacoes": obs,
                 }).eq("id", int(id_edit)).execute()
                 st.success("✅ Alterado!")
                 st.cache_data.clear()
                 st.rerun()
 
-        if st.button("🗑️ Excluir este exame"):
-            supabase.table("exames").delete().eq("id", int(id_edit)).execute()
-            st.success("Excluído!")
-            st.cache_data.clear()
-            st.rerun()
+            # Ação do botão Excluir (agora ele está no lugar certo e não repete)
+            if btn_excluir:
+                supabase.table("exames").delete().eq("id", int(id_edit)).execute()
+                st.success("Excluído!")
+                st.cache_data.clear()
+                st.rerun()
 
 # ---------- ABA 3: NOVO EXAME ----------
 with aba3:
     st.subheader("➕ Adicionar Novo Exame")
+    # Formulário de novo exame com a limpeza automática ativada
     with st.form("novo", clear_on_submit=True):
         c1, c2, c3 = st.columns(3)
         num = c1.text_input("Nº Atendimento")
